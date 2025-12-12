@@ -1,11 +1,208 @@
-<html>
- <head>
-    <title>はかせのポートフォリオ</title>
- </head>
- <body>
- ここが本体です
- <body>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>白井博士 | ポートフォリオ</title>
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="brand">
+      <span class="dot"></span>
+      <span class="brand-name">Hakase Shirai</span>
+    </div>
+    <nav class="nav">
+      <a href="#about">概要</a>
+      <a href="#skills">スキル</a>
+      <a href="#projects">プロジェクト</a>
+      <a href="#timeline">経歴</a>
+      <a class="button ghost" href="#contact">連絡</a>
+    </nav>
+  </header>
 
+  <main>
+    <section class="hero">
+      <div class="hero__content">
+        <p class="eyebrow">Portfolio / Web & Product</p>
+        <h1>白井博士です。<br />使い手に寄り添う体験を設計します。</h1>
+        <p class="lede">
+          フロントエンドを中心に、デザインと実装を行き来しながらプロダクトを前進させます。
+          小さな実験をすぐ形にし、チームの意思決定を速くするのが得意です。
+        </p>
+        <div class="hero__actions">
+          <a class="button primary" href="#projects">制作事例を見る</a>
+          <a class="button secondary" href="#contact">相談してみる</a>
+        </div>
+        <div class="hero__meta">
+          <span>拠点: 東京</span>
+          <span>得意: TypeScript / React / デザインシステム</span>
+        </div>
+      </div>
+      <div class="hero__card">
+        <div class="glass">
+          <p class="label">現在のフォーカス</p>
+          <h3>アクセシブルで速い UI を作る</h3>
+          <p class="small">
+            パフォーマンス計測、UI パターンの共通化、ドキュメント整備を通じて
+            プロダクトの一貫性と開発速度を両立させます。
+          </p>
+          <div class="tags">
+            <span>Design System</span>
+            <span>Next.js</span>
+            <span>Storybook</span>
+          </div>
+        </div>
+      </div>
+    </section>
 
+    <section id="about" class="panel">
+      <div class="panel__header">
+        <p class="eyebrow">About</p>
+        <h2>自己紹介</h2>
+      </div>
+      <div class="panel__content two-col">
+        <p>
+          Web プロダクトの初期立ち上げからグロースまで経験。デザイナーとエンジニア双方の視点を持ち、
+          情報設計から実装、計測まで一貫して担当します。ドキュメントとデザインシステムを整えることで、
+          チームメンバーが安心して改修できる土台づくりを重視しています。
+        </p>
+        <ul class="bullet">
+          <li>UI アーキテクチャとデザインシステム設計</li>
+          <li>TypeScript / React / Next.js / Node.js</li>
+          <li>プロトタイピングとユーザーテストの設計</li>
+          <li>アクセシビリティとパフォーマンス改善</li>
+        </ul>
+      </div>
+    </section>
 
+    <section id="skills" class="panel alt">
+      <div class="panel__header">
+        <p class="eyebrow">Skills</p>
+        <h2>スキルセット</h2>
+      </div>
+      <div class="pill-grid">
+        <div class="pill-card">
+          <p class="label">Frontend</p>
+          <h3>React / Next.js / TypeScript</h3>
+          <p class="small">Atomic Design と Storybook で再利用性の高い UI を構築し、型安全性で品質を担保します。</p>
+        </div>
+        <div class="pill-card">
+          <p class="label">Design</p>
+          <h3>情報設計とモーション</h3>
+          <p class="small">Figma によるプロトタイピング、トークン設計、微細なマイクロインタラクションで体験を磨きます。</p>
+        </div>
+        <div class="pill-card">
+          <p class="label">Ops</p>
+          <h3>品質とデリバリー</h3>
+          <p class="small">自動テスト、Lint/Format、GitHub Actions によるデプロイで安定したリリースを実現します。</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="projects" class="panel">
+      <div class="panel__header">
+        <p class="eyebrow">Work</p>
+        <h2>プロジェクトハイライト</h2>
+      </div>
+      <div class="project-grid">
+        <article class="project">
+          <header>
+            <p class="label">B2B ダッシュボード</p>
+            <h3>意思決定を速くする KPI 可視化</h3>
+          </header>
+          <p>データ量の多い画面でも迷わない情報設計と、チャートのアクセシビリティ改善で利用率を 30% 向上。</p>
+          <div class="tags">
+            <span>React</span><span>D3.js</span><span>Design Ops</span>
+          </div>
+        </article>
+        <article class="project">
+          <header>
+            <p class="label">デザインシステム</p>
+            <h3>UI コンポーネント群の共通化</h3>
+          </header>
+          <p>トークン駆動のコンポーネントと Storybook ドキュメントを整備。開発工数を 20% 削減し、ガイドラインを標準化。</p>
+          <div class="tags">
+            <span>Storybook</span><span>TypeScript</span><span>Figma</span>
+          </div>
+        </article>
+        <article class="project">
+          <header>
+            <p class="label">モバイル導線改善</p>
+            <h3>CVR +12% のナビゲーション刷新</h3>
+          </header>
+          <p>モバイル優先で情報を再構成し、操作ステップを 30% 短縮。スムーズなアニメーションで離脱を抑制。</p>
+          <div class="tags">
+            <span>UX Research</span><span>Motion</span><span>Next.js</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="timeline" class="panel alt">
+      <div class="panel__header">
+        <p class="eyebrow">Timeline</p>
+        <h2>経歴</h2>
+      </div>
+      <div class="timeline">
+        <div class="timeline__item">
+          <div class="dot"></div>
+          <div>
+            <p class="label">2023 - 現在</p>
+            <h3>フロントエンドリード</h3>
+            <p class="small">新規 SaaS の UI アーキテクチャ設計とデザインシステム立ち上げを担当。</p>
+          </div>
+        </div>
+        <div class="timeline__item">
+          <div class="dot"></div>
+          <div>
+            <p class="label">2020 - 2023</p>
+            <h3>プロダクトデザイナー / エンジニア</h3>
+            <p class="small">UX リサーチから実装まで一貫して担当し、モバイル体験の最適化に注力。</p>
+          </div>
+        </div>
+        <div class="timeline__item">
+          <div class="dot"></div>
+          <div>
+            <p class="label">2018 - 2020</p>
+            <h3>Web エンジニア</h3>
+            <p class="small">受託案件での React/Node.js 実装と、アクセシビリティ改善のガイド作成を実施。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="panel contact">
+      <div class="panel__header">
+        <p class="eyebrow">Contact</p>
+        <h2>一緒に作りませんか？</h2>
+      </div>
+      <div class="contact__grid">
+        <div>
+          <p>
+            プロダクトの初期検討からデザインシステム構築、既存 UI の改善まで幅広くお手伝いできます。
+            気軽にご相談ください。48 時間以内に返信します。
+          </p>
+          <div class="contact__actions">
+            <a class="button primary" href="mailto:contact@shirai.dev">メールを送る</a>
+            <a class="button secondary" href="https://www.linkedin.com" target="_blank" rel="noreferrer">LinkedIn</a>
+          </div>
+        </div>
+        <div class="contact__card">
+          <p class="label">ステータス</p>
+          <h3>フリーランス / 業務委託受付中</h3>
+          <ul class="bullet compact">
+            <li>週 2-3 日からの参画可</li>
+            <li>リモート / ハイブリッド対応</li>
+            <li>UI/UX 改善スプリントの伴走</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>© 2024 Hakase Shirai. Crafted with curiosity.</p>
+  </footer>
+</body>
 </html>
