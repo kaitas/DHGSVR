@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Daily 1 App Challenge | バイブコーディングで毎日1アプリ</title>
+  <meta name="description" content="バイブコーディングで何でも作る。毎日1アプリ作る学生のポートフォリオ。" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            cyber: {
+              bg: '#0a0a0f',
+              surface: '#12121a',
+              card: '#1a1a2e',
+              border: '#2a2a3e',
+              accent: '#00f0ff',
+              accent2: '#7b2fff',
+              pink: '#ff2eaa',
+              green: '#00ff88',
+              yellow: '#ffe600',
+            }
+          },
+          fontFamily: {
+            mono: ['"JetBrains Mono"', '"Fira Code"', 'monospace'],
+            sans: ['"Inter"', '"Noto Sans JP"', 'sans-serif'],
+          },
+          animation: {
+            'glow-pulse': 'glow-pulse 2s ease-in-out infinite alternate',
+            'float': 'float 6s ease-in-out infinite',
+            'code-rain': 'code-rain 20s linear infinite',
+            'slide-up': 'slide-up 0.6s ease-out',
+            'counter-tick': 'counter-tick 0.3s ease-out',
+          },
+          keyframes: {
+            'glow-pulse': {
+              '0%': { textShadow: '0 0 20px #00f0ff, 0 0 40px #00f0ff40' },
+              '100%': { textShadow: '0 0 30px #7b2fff, 0 0 60px #7b2fff40' },
+            },
+            'float': {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-10px)' },
+            },
+            'code-rain': {
+              '0%': { transform: 'translateY(-100%)' },
+              '100%': { transform: 'translateY(100vh)' },
+            },
+            'slide-up': {
+              '0%': { opacity: '0', transform: 'translateY(30px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+            'counter-tick': {
+              '0%': { transform: 'scale(1)' },
+              '50%': { transform: 'scale(1.15)' },
+              '100%': { transform: 'scale(1)' },
+            },
+          },
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&family=JetBrains+Mono:wght@400;700&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { background: #0a0a0f; color: #e0e0e8; font-family: 'Inter', 'Noto Sans JP', sans-serif; overflow-x: hidden; }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #0a0a0f; }
+    ::-webkit-scrollbar-thumb { background: #00f0ff40; border-radius: 3px; }
+
+    /* Code rain background */
+    .code-rain-container { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+    .code-column {
+      position: absolute;
+      top: -100%;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      line-height: 1.6;
+      color: #00f0ff15;
+      writing-mode: vertical-rl;
+      white-space: nowrap;
+      animation: code-rain var(--duration) linear infinite;
+      animation-delay: var(--delay);
+    }
+
+    /* Gradient text */
+    .gradient-text {
+      background: linear-gradient(135deg, #00f0ff, #7b2fff, #ff2eaa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .gradient-text-green {
+      background: linear-gradient(135deg, #00ff88, #00f0ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Glow effects */
+    .glow-border {
+      border: 1px solid #00f0ff30;
+      box-shadow: 0 0 20px #00f0ff10, inset 0 0 20px #00f0ff05;
+    }
+    .glow-border:hover {
+      border-color: #00f0ff60;
+      box-shadow: 0 0 30px #00f0ff20, inset 0 0 30px #00f0ff10;
+    }
+
+    /* Card hover */
+    .app-card {
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .app-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%;
+      width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, #00f0ff08, transparent);
+      transition: left 0.5s ease;
+    }
+    .app-card:hover::before { left: 100%; }
+    .app-card:hover { transform: translateY(-4px); }
+
+    /* Streak fire effect */
+    .streak-fire {
+      text-shadow: 0 0 10px #ff660080, 0 0 20px #ff220040;
+    }
+
+    /* Tag pill */
+    .tag-pill {
+      background: linear-gradient(135deg, #00f0ff15, #7b2fff15);
+      border: 1px solid #00f0ff30;
+      transition: all 0.2s ease;
+    }
+    .tag-pill:hover {
+      background: linear-gradient(135deg, #00f0ff25, #7b2fff25);
+      border-color: #00f0ff60;
+    }
+
+    /* Neon button */
+    .neon-btn {
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+    .neon-btn::after {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      background: linear-gradient(135deg, #00f0ff, #7b2fff, #ff2eaa);
+      z-index: -1;
+      border-radius: inherit;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .neon-btn:hover::after { opacity: 1; }
+    .neon-btn:hover { box-shadow: 0 0 30px #00f0ff40; }
+
+    /* Today badge pulse */
+    @keyframes badge-pulse {
+      0%, 100% { box-shadow: 0 0 0 0 #00ff8860; }
+      50% { box-shadow: 0 0 0 8px #00ff8800; }
+    }
+    .today-badge { animation: badge-pulse 2s ease-in-out infinite; }
+
+    /* Intersection observer animation */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.6s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Grid pattern bg */
+    .grid-bg {
+      background-image:
+        linear-gradient(#00f0ff08 1px, transparent 1px),
+        linear-gradient(90deg, #00f0ff08 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+  </style>
+</head>
+<body class="grid-bg">
+
+  <!-- ===== HERO ===== -->
+  <section class="relative min-h-screen flex items-center justify-center px-4 py-20">
+    <div class="code-rain-container" id="codeRain"></div>
+
+    <div class="relative z-10 text-center max-w-5xl mx-auto">
+      <!-- Badge -->
+      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyber-card border border-cyber-border mb-8 animate-[slide-up_0.6s_ease-out]">
+        <span class="w-2 h-2 rounded-full bg-cyber-green today-badge"></span>
+        <span class="text-sm text-cyber-green font-mono">CURRENTLY BUILDING...</span>
+      </div>
+
+      <!-- Main Title -->
+      <h1 class="text-5xl sm:text-7xl lg:text-8xl font-black tracking-tight mb-4 animate-glow-pulse leading-tight">
+        <span class="gradient-text">Daily 1 App</span><br />
+        <span class="text-white">Challenge</span>
+      </h1>
+
+      <!-- Subtitle -->
+      <p class="text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto mb-6 animate-[slide-up_0.6s_ease-out_0.2s_both]">
+        バイブコーディングで何でも作る。<br class="sm:hidden" />毎日1アプリ作る学生。
+      </p>
+
+      <!-- Streak Counter -->
+      <div class="inline-flex items-center gap-4 px-6 py-3 rounded-2xl bg-cyber-card border border-cyber-border animate-[slide-up_0.6s_ease-out_0.4s_both]">
+        <div class="text-left">
+          <p class="text-xs text-gray-500 font-mono uppercase tracking-wider">連続作成日数</p>
+          <p class="text-3xl sm:text-4xl font-black font-mono streak-fire text-cyber-yellow" id="streakCount">0</p>
+        </div>
+        <div class="w-px h-10 bg-cyber-border"></div>
+        <div class="text-left">
+          <p class="text-xs text-gray-500 font-mono uppercase tracking-wider">総アプリ数</p>
+          <p class="text-3xl sm:text-4xl font-black font-mono text-cyber-accent" id="totalApps">0</p>
+        </div>
+        <div class="w-px h-10 bg-cyber-border"></div>
+        <div class="text-left">
+          <p class="text-xs text-gray-500 font-mono uppercase tracking-wider">使用技術</p>
+          <p class="text-3xl sm:text-4xl font-black font-mono text-cyber-pink" id="techCount">0</p>
+        </div>
+      </div>
+
+      <!-- Scroll hint -->
+      <div class="mt-16 animate-float">
+        <svg class="w-6 h-6 mx-auto text-cyber-accent opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TODAY'S APP ===== -->
+  <section class="relative px-4 py-20" id="today">
+    <div class="max-w-4xl mx-auto reveal">
+      <div class="flex items-center gap-3 mb-8">
+        <span class="w-3 h-3 rounded-full bg-cyber-green today-badge"></span>
+        <h2 class="text-sm font-mono text-cyber-green uppercase tracking-widest">Today's App</h2>
+        <span class="text-sm font-mono text-gray-600" id="todayDate"></span>
+      </div>
+
+      <div class="glow-border rounded-3xl bg-cyber-surface p-6 sm:p-10">
+        <div class="flex flex-col lg:flex-row gap-8">
+          <!-- Screenshot placeholder -->
+          <div class="lg:w-1/2 aspect-video rounded-2xl bg-cyber-card border border-cyber-border flex items-center justify-center overflow-hidden" id="todayScreenshot">
+            <div class="text-center p-8">
+              <div class="text-6xl mb-4" id="todayEmoji">🎮</div>
+              <p class="text-sm text-gray-500 font-mono">スクリーンショット</p>
+            </div>
+          </div>
+          <!-- Info -->
+          <div class="lg:w-1/2 flex flex-col justify-center">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="px-3 py-1 rounded-full bg-cyber-green/20 text-cyber-green text-xs font-mono font-bold">NEW</span>
+              <span class="px-3 py-1 rounded-full bg-cyber-accent/20 text-cyber-accent text-xs font-mono" id="todayDay">Day 15</span>
+            </div>
+            <h3 class="text-3xl sm:text-4xl font-black text-white mb-3" id="todayTitle">AI チャットボット</h3>
+            <p class="text-gray-400 mb-6 leading-relaxed" id="todayDesc">
+              OpenAI APIを使ったリアルタイムチャットボット。ストリーミング応答、マークダウンレンダリング、会話履歴の保持に対応。
+            </p>
+            <div class="flex flex-wrap gap-2 mb-6" id="todayTags">
+              <span class="tag-pill px-3 py-1 rounded-full text-xs font-mono text-cyber-accent">React</span>
+              <span class="tag-pill px-3 py-1 rounded-full text-xs font-mono text-cyber-accent">OpenAI API</span>
+              <span class="tag-pill px-3 py-1 rounded-full text-xs font-mono text-cyber-accent">Tailwind CSS</span>
+            </div>
+            <div class="flex gap-3">
+              <a href="#" id="todayDemo" class="neon-btn inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-cyber-accent/10 border border-cyber-accent/40 text-cyber-accent font-mono text-sm font-bold hover:bg-cyber-accent/20 transition-all">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                DEMO
+              </a>
+              <a href="#" id="todayGithub" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-cyber-card border border-cyber-border text-gray-300 font-mono text-sm font-bold hover:border-cyber-accent/40 hover:text-cyber-accent transition-all">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                GitHub
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== VIBES STATUS ===== -->
+  <section class="px-4 py-16">
+    <div class="max-w-5xl mx-auto reveal">
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="glow-border rounded-2xl bg-cyber-surface p-6 text-center">
+          <p class="text-4xl sm:text-5xl font-black font-mono text-cyber-yellow streak-fire mb-1" id="vibeStreak">15</p>
+          <p class="text-xs text-gray-500 font-mono uppercase tracking-wider">日連続</p>
+          <div class="mt-2 text-lg">🔥</div>
+        </div>
+        <div class="glow-border rounded-2xl bg-cyber-surface p-6 text-center">
+          <p class="text-4xl sm:text-5xl font-black font-mono text-cyber-accent mb-1" id="vibeTotal">32</p>
+          <p class="text-xs text-gray-500 font-mono uppercase tracking-wider">アプリ完成</p>
+          <div class="mt-2 text-lg">🚀</div>
+        </div>
+        <div class="glow-border rounded-2xl bg-cyber-surface p-6 text-center">
+          <p class="text-4xl sm:text-5xl font-black font-mono text-cyber-pink mb-1" id="vibeCommits">847</p>
+          <p class="text-xs text-gray-500 font-mono uppercase tracking-wider">コミット</p>
+          <div class="mt-2 text-lg">⚡</div>
+        </div>
+        <div class="glow-border rounded-2xl bg-cyber-surface p-6 text-center">
+          <p class="text-4xl sm:text-5xl font-black font-mono text-cyber-green mb-1" id="vibeTech">12</p>
+          <p class="text-xs text-gray-500 font-mono uppercase tracking-wider">使用技術</p>
+          <div class="mt-2 text-lg">🧠</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== APP ARCHIVE ===== -->
+  <section class="px-4 py-20" id="archive">
+    <div class="max-w-6xl mx-auto">
+      <div class="flex items-center justify-between mb-10 reveal">
+        <div>
+          <h2 class="text-sm font-mono text-cyber-accent uppercase tracking-widest mb-2">App Archive</h2>
+          <p class="text-3xl sm:text-4xl font-black text-white">これまで作ったアプリたち</p>
+        </div>
+        <!-- Filter -->
+        <div class="hidden sm:flex gap-2" id="filterBtns">
+          <button class="filter-btn active px-4 py-2 rounded-xl bg-cyber-accent/10 border border-cyber-accent/40 text-cyber-accent text-xs font-mono font-bold transition-all hover:bg-cyber-accent/20" data-filter="all">ALL</button>
+          <button class="filter-btn px-4 py-2 rounded-xl bg-cyber-card border border-cyber-border text-gray-400 text-xs font-mono font-bold transition-all hover:border-cyber-accent/40 hover:text-cyber-accent" data-filter="web">WEB</button>
+          <button class="filter-btn px-4 py-2 rounded-xl bg-cyber-card border border-cyber-border text-gray-400 text-xs font-mono font-bold transition-all hover:border-cyber-accent/40 hover:text-cyber-accent" data-filter="ai">AI</button>
+          <button class="filter-btn px-4 py-2 rounded-xl bg-cyber-card border border-cyber-border text-gray-400 text-xs font-mono font-bold transition-all hover:border-cyber-accent/40 hover:text-cyber-accent" data-filter="game">GAME</button>
+          <button class="filter-btn px-4 py-2 rounded-xl bg-cyber-card border border-cyber-border text-gray-400 text-xs font-mono font-bold transition-all hover:border-cyber-accent/40 hover:text-cyber-accent" data-filter="tool">TOOL</button>
+        </div>
+      </div>
+
+      <!-- App Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5" id="appGrid"></div>
+
+      <!-- Load more -->
+      <div class="text-center mt-12 reveal">
+        <button onclick="loadMoreApps()" class="neon-btn px-8 py-4 rounded-2xl bg-cyber-card border border-cyber-border text-gray-300 font-mono font-bold hover:border-cyber-accent/40 hover:text-cyber-accent transition-all">
+          もっと見る ↓
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TECH STACK ===== -->
+  <section class="px-4 py-20">
+    <div class="max-w-4xl mx-auto text-center reveal">
+      <h2 class="text-sm font-mono text-cyber-accent uppercase tracking-widest mb-2">Tech Stack</h2>
+      <p class="text-3xl sm:text-4xl font-black text-white mb-10">よく使う技術</p>
+      <div class="flex flex-wrap justify-center gap-3" id="techStack"></div>
+    </div>
+  </section>
+
+  <!-- ===== DISCLAIMER BANNER ===== -->
+  <div class="px-4 py-4 bg-cyber-card border-t border-b border-cyber-border">
+    <p class="text-center text-sm text-gray-400 font-mono">
+      このページはバイブコーディングのデモをするための例です。実際のポートフォリオは<a href="index.html" class="text-cyber-accent underline underline-offset-4 hover:text-white transition-colors">こちら</a>
+    </p>
+  </div>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="border-t border-cyber-border px-4 py-12">
+    <div class="max-w-4xl mx-auto text-center">
+      <p class="gradient-text text-2xl font-black mb-4">Keep Building. Keep Vibing.</p>
+      <p class="text-gray-500 text-sm font-mono mb-6">毎日コードを書く。毎日アプリを作る。毎日成長する。</p>
+      <div class="flex justify-center gap-4 mb-8">
+        <a href="#" class="w-10 h-10 rounded-xl bg-cyber-card border border-cyber-border flex items-center justify-center text-gray-400 hover:text-cyber-accent hover:border-cyber-accent/40 transition-all">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+        </a>
+        <a href="#" class="w-10 h-10 rounded-xl bg-cyber-card border border-cyber-border flex items-center justify-center text-gray-400 hover:text-cyber-accent hover:border-cyber-accent/40 transition-all">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        </a>
+      </div>
+      <p class="text-gray-600 text-xs font-mono">&copy; 2025 Daily 1 App Challenge. Built with vibes.</p>
+    </div>
+  </footer>
+
+<script>
+// ==========================================
+// DATA - ここを編集してアプリを追加！
+// ==========================================
+const APP_DATA = {
+  // バイブスステータス
+  streak: 15,       // 連続作成日数
+  totalApps: 32,    // 総アプリ数
+  commits: 847,     // 総コミット数
+  techCount: 12,    // 使用技術数
+
+  // 本日のアプリ
+  today: {
+    day: 32,
+    title: "AI チャットボット",
+    emoji: "🤖",
+    description: "OpenAI APIを使ったリアルタイムチャットボット。ストリーミング応答、マークダウンレンダリング、会話履歴の保持に対応。",
+    tags: ["React", "OpenAI API", "Tailwind CSS"],
+    category: "ai",
+    demoUrl: "#",
+    githubUrl: "#",
+  },
+
+  // アプリアーカイブ（新しい順に並べる）
+  apps: [
+    { day: 31, title: "ポモドーロタイマー", emoji: "⏱️", description: "25分集中 + 5分休憩のサイクル管理。通知音とプログレスバー付き。", tags: ["Vue.js", "Web Audio API"], category: "tool", demoUrl: "#", githubUrl: "#" },
+    { day: 30, title: "天気ダッシュボード", emoji: "🌤️", description: "位置情報ベースのリアルタイム天気表示。5日間予報とグラフ可視化。", tags: ["React", "OpenWeather API", "Chart.js"], category: "web", demoUrl: "#", githubUrl: "#" },
+    { day: 29, title: "マークダウンエディタ", emoji: "📝", description: "リアルタイムプレビュー付きのマークダウンエディタ。ダークモード対応。", tags: ["Svelte", "marked.js"], category: "tool", demoUrl: "#", githubUrl: "#" },
+    { day: 28, title: "2Dプラットフォーマー", emoji: "🎮", description: "HTML5 Canvas で作ったジャンプアクション。レベルエディタ機能付き。", tags: ["Canvas API", "JavaScript"], category: "game", demoUrl: "#", githubUrl: "#" },
+    { day: 27, title: "画像生成ギャラリー", emoji: "🎨", description: "Stable Diffusion API で生成した画像のギャラリー。プロンプト共有機能付き。", tags: ["Next.js", "Stable Diffusion", "Supabase"], category: "ai", demoUrl: "#", githubUrl: "#" },
+    { day: 26, title: "音楽ビジュアライザー", emoji: "🎵", description: "Web Audio API でリアルタイムに音楽を可視化。周波数分析とパーティクル。", tags: ["Three.js", "Web Audio API"], category: "web", demoUrl: "#", githubUrl: "#" },
+    { day: 25, title: "タスク管理アプリ", emoji: "✅", description: "ドラッグ&ドロップ対応のカンバンボード。ローカルストレージで永続化。", tags: ["React", "dnd-kit", "localStorage"], category: "tool", demoUrl: "#", githubUrl: "#" },
+    { day: 24, title: "AIクイズジェネレーター", emoji: "🧠", description: "GPT-4で問題を自動生成するクイズアプリ。難易度調整とスコア記録。", tags: ["Next.js", "OpenAI API", "Prisma"], category: "ai", demoUrl: "#", githubUrl: "#" },
+    { day: 23, title: "ピクセルアートエディタ", emoji: "🖌️", description: "ドット絵を描いてGIFアニメとしてエクスポート。パレット管理付き。", tags: ["Canvas API", "GIF.js"], category: "tool", demoUrl: "#", githubUrl: "#" },
+    { day: 22, title: "リズムゲーム", emoji: "🥁", description: "ブラウザで遊べるリズムゲーム。カスタム譜面エディタ搭載。", tags: ["Phaser.js", "Web Audio API"], category: "game", demoUrl: "#", githubUrl: "#" },
+    { day: 21, title: "SNSダッシュボード", emoji: "📊", description: "複数SNSの分析データを1画面に統合。グラフとインサイト表示。", tags: ["React", "D3.js", "Twitter API"], category: "web", demoUrl: "#", githubUrl: "#" },
+    { day: 20, title: "翻訳チャット", emoji: "🌍", description: "リアルタイム翻訳チャット。DeepL API 連携で100言語対応。", tags: ["Socket.io", "DeepL API", "Express"], category: "ai", demoUrl: "#", githubUrl: "#" },
+    { day: 19, title: "ファイル共有サービス", emoji: "📁", description: "WebRTC で P2P ファイル転送。サーバーレスで安全に送信。", tags: ["WebRTC", "PeerJS"], category: "tool", demoUrl: "#", githubUrl: "#" },
+    { day: 18, title: "テトリスクローン", emoji: "🧱", description: "クラシックテトリスの完全再現。ゴーストピース、Tスピン判定対応。", tags: ["TypeScript", "Canvas API"], category: "game", demoUrl: "#", githubUrl: "#" },
+    { day: 17, title: "ブログCMS", emoji: "📰", description: "マークダウンベースのヘッドレスCMS。ISR対応の爆速表示。", tags: ["Next.js", "MDX", "Vercel"], category: "web", demoUrl: "#", githubUrl: "#" },
+    { day: 16, title: "手書き数字認識", emoji: "✍️", description: "TensorFlow.js でブラウザ上でMNIST推論。キャンバスに書いて即判定。", tags: ["TensorFlow.js", "Canvas API"], category: "ai", demoUrl: "#", githubUrl: "#" },
+  ],
+
+  // 技術スタック
+  techStack: [
+    { name: "React", color: "#61dafb" },
+    { name: "Next.js", color: "#ffffff" },
+    { name: "Vue.js", color: "#42b883" },
+    { name: "Svelte", color: "#ff3e00" },
+    { name: "TypeScript", color: "#3178c6" },
+    { name: "Tailwind CSS", color: "#06b6d4" },
+    { name: "Node.js", color: "#68a063" },
+    { name: "Python", color: "#ffd43b" },
+    { name: "Three.js", color: "#00f0ff" },
+    { name: "OpenAI API", color: "#10a37f" },
+    { name: "Supabase", color: "#3fcf8e" },
+    { name: "Firebase", color: "#ffca28" },
+    { name: "Canvas API", color: "#ff6b6b" },
+    { name: "WebRTC", color: "#7b2fff" },
+    { name: "TensorFlow.js", color: "#ff6f00" },
+    { name: "Phaser.js", color: "#ff2eaa" },
+  ],
+};
+
+// ==========================================
+// CODE RAIN EFFECT
+// ==========================================
+function initCodeRain() {
+  const container = document.getElementById('codeRain');
+  const snippets = [
+    'const app = () => {', 'return <div>', 'useState(0)', 'async fetch()',
+    'npm run dev', '.then(res =>', 'export default', 'className="',
+    'onClick={handle}', 'useEffect(() =>', '<Component />', 'git commit -m',
+    'console.log()', 'import React', 'const [data]', 'await api.get',
+    'function main()', 'border-radius', 'flex items-center', 'grid cols-3',
+    'try { await', 'catch (err)', '} finally {', 'new Promise(',
+  ];
+
+  const columns = Math.min(Math.floor(window.innerWidth / 80), 20);
+  for (let i = 0; i < columns; i++) {
+    const col = document.createElement('div');
+    col.className = 'code-column';
+    col.style.left = `${(i / columns) * 100}%`;
+    col.style.setProperty('--duration', `${15 + Math.random() * 20}s`);
+    col.style.setProperty('--delay', `${-Math.random() * 20}s`);
+    col.style.opacity = 0.03 + Math.random() * 0.06;
+
+    let text = '';
+    const lineCount = 20 + Math.floor(Math.random() * 15);
+    for (let j = 0; j < lineCount; j++) {
+      text += snippets[Math.floor(Math.random() * snippets.length)] + '\n';
+    }
+    col.textContent = text;
+    container.appendChild(col);
+  }
+}
+
+// ==========================================
+// COUNTER ANIMATION
+// ==========================================
+function animateCounter(elementId, target, duration = 1500) {
+  const el = document.getElementById(elementId);
+  if (!el) return;
+  const start = performance.now();
+  const startVal = 0;
+
+  function update(now) {
+    const elapsed = now - start;
+    const progress = Math.min(elapsed / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+    const current = Math.floor(startVal + (target - startVal) * eased);
+    el.textContent = current.toLocaleString();
+    if (progress < 1) requestAnimationFrame(update);
+  }
+  requestAnimationFrame(update);
+}
+
+// ==========================================
+// RENDER TODAY'S APP
+// ==========================================
+function renderToday() {
+  const t = APP_DATA.today;
+  const now = new Date();
+  const dateStr = `${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')}`;
+
+  document.getElementById('todayDate').textContent = dateStr;
+  document.getElementById('todayEmoji').textContent = t.emoji;
+  document.getElementById('todayTitle').textContent = t.title;
+  document.getElementById('todayDesc').textContent = t.description;
+  document.getElementById('todayDay').textContent = `Day ${t.day}`;
+  document.getElementById('todayDemo').href = t.demoUrl;
+  document.getElementById('todayGithub').href = t.githubUrl;
+
+  const tagsContainer = document.getElementById('todayTags');
+  tagsContainer.innerHTML = t.tags.map(tag =>
+    `<span class="tag-pill px-3 py-1 rounded-full text-xs font-mono text-cyber-accent">${tag}</span>`
+  ).join('');
+}
+
+// ==========================================
+// RENDER APP ARCHIVE
+// ==========================================
+let displayedApps = 0;
+const APPS_PER_PAGE = 6;
+
+function createAppCard(app) {
+  return `
+    <article class="app-card glow-border rounded-2xl bg-cyber-surface p-6 cursor-pointer" data-category="${app.category}">
+      <div class="flex items-start justify-between mb-4">
+        <div class="text-3xl">${app.emoji}</div>
+        <span class="px-2 py-1 rounded-lg bg-cyber-card text-xs font-mono text-gray-500">Day ${app.day}</span>
+      </div>
+      <h3 class="text-lg font-bold text-white mb-2">${app.title}</h3>
+      <p class="text-sm text-gray-400 mb-4 leading-relaxed line-clamp-2" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${app.description}</p>
+      <div class="flex flex-wrap gap-1.5 mb-4">
+        ${app.tags.map(tag => `<span class="tag-pill px-2 py-0.5 rounded-full text-[10px] font-mono text-cyber-accent">${tag}</span>`).join('')}
+      </div>
+      <div class="flex gap-2">
+        <a href="${app.demoUrl}" class="flex-1 text-center py-2 rounded-lg bg-cyber-accent/10 text-cyber-accent text-xs font-mono font-bold hover:bg-cyber-accent/20 transition-all">Demo</a>
+        <a href="${app.githubUrl}" class="flex-1 text-center py-2 rounded-lg bg-cyber-card border border-cyber-border text-gray-400 text-xs font-mono font-bold hover:border-cyber-accent/40 hover:text-cyber-accent transition-all">Code</a>
+      </div>
+    </article>
+  `;
+}
+
+function loadApps(count) {
+  const grid = document.getElementById('appGrid');
+  const apps = APP_DATA.apps.slice(displayedApps, displayedApps + count);
+  apps.forEach((app, i) => {
+    const wrapper = document.createElement('div');
+    wrapper.innerHTML = createAppCard(app);
+    wrapper.firstElementChild.style.animationDelay = `${i * 0.1}s`;
+    wrapper.firstElementChild.classList.add('animate-[slide-up_0.5s_ease-out_both]');
+    grid.appendChild(wrapper.firstElementChild);
+  });
+  displayedApps += apps.length;
+}
+
+function loadMoreApps() {
+  loadApps(APPS_PER_PAGE);
+}
+
+// ==========================================
+// FILTER
+// ==========================================
+function initFilters() {
+  const btns = document.querySelectorAll('.filter-btn');
+  btns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      btns.forEach(b => {
+        b.classList.remove('active', 'bg-cyber-accent/10', 'border-cyber-accent/40', 'text-cyber-accent');
+        b.classList.add('bg-cyber-card', 'border-cyber-border', 'text-gray-400');
+      });
+      btn.classList.add('active', 'bg-cyber-accent/10', 'border-cyber-accent/40', 'text-cyber-accent');
+      btn.classList.remove('bg-cyber-card', 'border-cyber-border', 'text-gray-400');
+
+      const filter = btn.dataset.filter;
+      document.querySelectorAll('.app-card').forEach(card => {
+        if (filter === 'all' || card.dataset.category === filter) {
+          card.style.display = '';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
+  });
+}
+
+// ==========================================
+// TECH STACK
+// ==========================================
+function renderTechStack() {
+  const container = document.getElementById('techStack');
+  container.innerHTML = APP_DATA.techStack.map(tech => `
+    <span class="tag-pill px-4 py-2 rounded-xl text-sm font-mono font-bold cursor-default hover:scale-105 transition-transform" style="color:${tech.color}; border-color:${tech.color}40; background:${tech.color}10;">
+      ${tech.name}
+    </span>
+  `).join('');
+}
+
+// ==========================================
+// SCROLL REVEAL
+// ==========================================
+function initReveal() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+}
+
+// ==========================================
+// INIT
+// ==========================================
+document.addEventListener('DOMContentLoaded', () => {
+  initCodeRain();
+  renderToday();
+  loadApps(APPS_PER_PAGE);
+  initFilters();
+  renderTechStack();
+  initReveal();
+
+  // Animate hero counters
+  setTimeout(() => {
+    animateCounter('streakCount', APP_DATA.streak);
+    animateCounter('totalApps', APP_DATA.totalApps);
+    animateCounter('techCount', APP_DATA.techCount);
+  }, 500);
+
+  // Set vibes status
+  document.getElementById('vibeStreak').textContent = APP_DATA.streak;
+  document.getElementById('vibeTotal').textContent = APP_DATA.totalApps;
+  document.getElementById('vibeCommits').textContent = APP_DATA.commits.toLocaleString();
+  document.getElementById('vibeTech').textContent = APP_DATA.techCount;
+});
+</script>
+
+</body>
+</html>
