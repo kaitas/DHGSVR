@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Making-of: DHGSVR25 | サイト制作の舞台裏</title>
+  <link rel="stylesheet" href="../assets/styles.css" />
+  <style>
+    /* ===== Light theme override (same as index.html) ===== */
+    :root {
+      --bg: #fafbfc;
+      --card: rgba(0, 0, 0, 0.02);
+      --panel: #ffffff;
+      --text: #1a1d26;
+      --muted: #5a6478;
+      --accent: #0ea573;
+      --accent-2: #3b7ddd;
+      --border: rgba(0, 0, 0, 0.08);
+      --shadow: 0 20px 60px rgba(0, 0, 0, 0.06);
+    }
+    body {
+      background:
+        radial-gradient(1200px at 20% 20%, rgba(14, 165, 115, 0.04), transparent),
+        radial-gradient(1400px at 80% 0%, rgba(59, 125, 221, 0.04), transparent),
+        var(--bg);
+      color: var(--text);
+    }
+    .site-header {
+      background: rgba(250, 251, 252, 0.92);
+      border-bottom-color: rgba(0, 0, 0, 0.06);
+    }
+    .nav a:hover { background: rgba(0, 0, 0, 0.04); }
+    .button.secondary { background: rgba(0, 0, 0, 0.04); }
+    .tags span { background: rgba(0, 0, 0, 0.03); }
+    .panel.alt { background: linear-gradient(180deg, rgba(0,0,0,0.015), rgba(0,0,0,0.005)); }
+    .brand .dot { box-shadow: 0 0 8px rgba(14, 165, 115, 0.6); }
+    .disclaimer { color: rgba(90, 100, 120, 0.5); }
+
+    /* ===== Making-of specific styles ===== */
+    .version-comparison {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 16px;
+    }
+    .version-comparison img {
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      width: 100%;
+    }
+    @media (max-width: 700px) {
+      .version-comparison { grid-template-columns: 1fr; }
+    }
+    .changelog-entry {
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .changelog-entry:last-child { border-bottom: none; }
+    .changelog-date {
+      font-size: 13px;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin: 0 0 6px;
+    }
+    .changelog-entry h3 { margin: 0 0 8px; }
+    .changelog-entry p { color: var(--muted); }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="brand">
+      <span class="dot"></span>
+      <span class="brand-name">Making-of: DHGSVR25</span>
+    </div>
+    <nav class="nav">
+      <a href="./">DHGSVR25</a>
+      <a href="../">トップ</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero__content">
+        <p class="eyebrow">Behind the Scenes</p>
+        <h1>DHGSVR25 サイト制作の舞台裏</h1>
+        <p class="lede">
+          このページでは、受講生ポートフォリオサイトの進化過程を記録しています。
+          各バージョンの変更点とその意図を振り返ります。
+        </p>
+      </div>
+    </section>
+
+    <!-- ===== Changelog ===== -->
+    <section class="panel">
+      <div class="panel__header">
+        <p class="eyebrow">Changelog</p>
+        <h2>バージョン履歴</h2>
+      </div>
+
+      <div class="changelog-entry">
+        <p class="changelog-date">v3 / 2025-02-14</p>
+        <h3>フリップブック演出 + ライトテーマ化</h3>
+        <p>
+          ページ読み込み時に23枚の受講生作品スクリーンショットがパタパタとめくれるフリップブック演出を追加。
+          配色を白ベースのライトテーマに変更し、よりポートフォリオらしい洗練された見た目に。
+        </p>
+        <div class="tags" style="margin-top: 8px;">
+          <span>JavaScript</span><span>CSS Variables</span><span>Animation</span><span>Light Theme</span>
+        </div>
+      </div>
+
+      <div class="changelog-entry">
+        <p class="changelog-date">v2 / 2025-02-13</p>
+        <h3>スクリーンショット付きカード + 3カラムグリッド</h3>
+        <p>
+          Playwright で全受講生サイトのスクリーンショットを自動撮影（23枚）。
+          カードにサムネイル画像を追加し、1行3列のグリッドレイアウトに変更。
+          「New Year 2026」と「受講生ポートフォリオ」にセクション分離。
+        </p>
+        <div class="tags" style="margin-top: 8px;">
+          <span>Playwright</span><span>Screenshots</span><span>Grid Layout</span>
+        </div>
+      </div>
+
+      <div class="changelog-entry">
+        <p class="changelog-date">v1 / 2025-02-13</p>
+        <h3>初版 - 受講生ポートフォリオ一覧</h3>
+        <p>
+          ダークテーマのポートフォリオ一覧ページを初作成。
+          共有CSS（assets/styles.css）を使用したレスポンシブグリッドレイアウト。
+          受講生のGitHub Pagesリンクをカード形式で一覧化。
+        </p>
+        <div class="tags" style="margin-top: 8px;">
+          <span>Initial</span><span>Dark Theme</span><span>CSS Grid</span>
+        </div>
+        <div style="margin-top: 12px;">
+          <a class="button secondary" href="index-v1-dark.html">v1（ダーク版）を見る</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Before/After ===== -->
+    <section class="panel alt">
+      <div class="panel__header">
+        <p class="eyebrow">Comparison</p>
+        <h2>ダーク版 vs ライト版</h2>
+      </div>
+      <div class="version-comparison">
+        <div>
+          <p class="label">Before（Dark Theme / v1）</p>
+          <img src="screenshots/archive/v1-dark-full.png" alt="ダークテーマ版" loading="lazy" />
+        </div>
+        <div>
+          <p class="label">After（Light Theme / v3）</p>
+          <img src="screenshots/archive/v2-light-full.png" alt="ライトテーマ版" loading="lazy" />
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Technical Notes ===== -->
+    <section class="panel">
+      <div class="panel__header">
+        <p class="eyebrow">Technical</p>
+        <h2>技術メモ</h2>
+      </div>
+      <div class="panel__content two-col">
+        <div>
+          <h3>フリップブック演出</h3>
+          <ul class="bullet">
+            <li>23枚のPNGを <code>new Image()</code> で事前読み込み（合計約3MB）</li>
+            <li><code>setTimeout</code> による可変フレームレート（60ms → 300ms）</li>
+            <li>二次曲線の減速で「パタパタ」感を演出</li>
+            <li>2周サイクル後にCSSトランジションでフェードアウト</li>
+            <li><code>prefers-reduced-motion</code> 対応</li>
+            <li><code>&lt;noscript&gt;</code> でJS無効時はオーバーレイ非表示</li>
+          </ul>
+        </div>
+        <div>
+          <h3>ライトテーマ切り替え</h3>
+          <ul class="bullet">
+            <li>共有CSSの <code>:root</code> 変数をインライン <code>&lt;style&gt;</code> で上書き</li>
+            <li>ルートの index.html（ダークテーマ）には影響なし</li>
+            <li>ハードコードされた <code>rgba</code> 値（header等）は個別にオーバーライド</li>
+            <li>アクセントカラーを白背景用に暗めに調整（#7ce7c1 → #0ea573）</li>
+            <li>WCAG AA コントラスト比を意識した配色</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== File Structure ===== -->
+    <section class="panel alt">
+      <div class="panel__header">
+        <p class="eyebrow">Structure</p>
+        <h2>ファイル構成</h2>
+      </div>
+      <pre style="color: var(--muted); font-size: 14px; line-height: 1.8; overflow-x: auto;">
+DHGSVR25/
+  index.html              ← メインページ（ライトテーマ + フリップブック）
+  index-v1-dark.html      ← v1アーカイブ（ダークテーマ）
+  making-of.html          ← このページ
+  blog-making-of-dhgsvr25.md ← ブログ用 Markdown
+  screenshots/            ← 受講生作品スクリーンショット（23枚）
+  screenshots/archive/    ← バージョン比較用スクリーンショット
+      </pre>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>&copy; 2025 DHGSVR25 / Digital Hollywood University Graduate School</p>
+    <p class="disclaimer">このサイトは講義での演習によるサンプルです。</p>
+  </footer>
+</body>
+</html>
