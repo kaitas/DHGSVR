@@ -1,0 +1,36 @@
+# Session Context
+
+**Session ID:** e04f4553-7ae8-474f-9cdd-4c45431c0437
+
+**Commit Message:** 全体を振り返ってリライトしよう。
+
+## Prompt
+
+全体を振り返ってリライトしよう。
+
+## Summary
+
+リライト完了です。主な改善点：
+
+### 構成の改善
+- **コマンド早見表の重複を解消**（1箇所のみに）
+- **「落とし穴→解決→実証」の流れを一本化** — `entire explain` の0件→1件が時系列で自然に繋がるように
+- **`entire status` の出力例を `auto-commit` に更新** — 実際の状態と一致
+
+### 内容の改善
+- **導入文に「実体験ベース」を明記** — 読者の期待値を最初にセット
+- **「auto-commitのもう一つの特徴」を追加** — 「はい」がコミットメッセージになる実例
+- **「導入チェックリスト」を追加** — 5ステップですぐ使える
+- **フッター更新** — 「記事自体の編集過程もEntireのチェックポイントとして記録されています」
+
+### 削除したもの
+- `entire explain` の「Checkpoints: 0」の単独説明（落とし穴セクションに統合）
+- 重複するコマンド早見表
+- 冗長な繰り返し表現
+
+`git push` しますか？
+
+## Key Actions
+
+- - **Read**: /Users/aki/git.local/DHGSVR/DHGSVR25/blog-how-to-use-entire.md
+- - **Write**: /Users/aki/git.local/DHGSVR/DHGSVR25/blog-how-to-use-entire.md

@@ -1,0 +1,23 @@
+{
+  "cli_version": "0.4.4",
+  "checkpoint_id": "979621aec034",
+  "session_id": "e04f4553-7ae8-474f-9cdd-4c45431c0437",
+  "strategy": "auto-commit",
+  "created_at": "2026-02-15T16:57:21.487025Z",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "DHGSVR25/blog-how-to-use-entire.md"
+  ],
+  "agent": "Claude Code",
+  "transcript_identifier_at_start": "a5aa933e-2d5e-4b0f-81a7-b87612f4685e",
+  "checkpoint_transcript_start": 766,
+  "transcript_lines_at_start": 766,
+  "token_usage": {
+    "input_tokens": 5,
+    "cache_creation_tokens": 31225,
+    "cache_read_tokens": 193075,
+    "output_tokens": 8789,
+    "api_call_count": 3
+  }
+}
