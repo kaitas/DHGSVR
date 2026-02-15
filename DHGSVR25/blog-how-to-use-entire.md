@@ -314,29 +314,83 @@ $ git branch -a | grep entire
 2. **v2**: Playwrightで23サイトのスクリーンショット自動撮影 + カードUI
 3. **v3**: フリップブック演出 + ライトテーマ化 + OGP設定
 
-Entireが有効な状態でこれらの作業を行うと、各コミットに以下が自動的に紐づきます:
+Entireが有効な状態でこれらの作業を行うと、各コミットにAIセッションの情報が自動的に紐づきます。ただし、**ここに重要な落とし穴があります**。
 
-```
-コミット: "DHGSVR25: フリップブック演出、ライトテーマ化"
-  └─ チェックポイント
-       ├─ セッションID: 2026-02-14-abc123
-       ├─ トークン数: 45,000
-       ├─ 意図: "ランディング時にスクリーンショットをパタパタアニメーション"
-       ├─ プロンプト履歴:
-       │    ├─ User: "フリップブック演出を追加して"
-       │    ├─ AI: [計画モードで設計 → 実装]
-       │    ├─ User: "ライトテーマにして"
-       │    └─ AI: [CSS変数オーバーライドで対応]
-       └─ 変更ファイル: index.html, making-of.html, ...
-```
+### 落とし穴：`entire enable` しただけでは記録されない
 
-3ヶ月後に「なぜ `setTimeout` で可変フレームレートにしたのか？」と疑問に思ったら:
+実際にDHGSVRプロジェクトで `entire enable` → Claude Codeで作業 → `git commit` → `git push` を行い、後から `entire explain` を実行してみると:
 
 ```bash
-entire explain --commit 6f6cf3e
+$ entire explain --commit 6f6cf3e
+No associated Entire checkpoint
+
+Commit 6f6cf3e does not have an Entire-Checkpoint trailer.
+This commit was not created during an Entire session, or the trailer was removed.
+
+$ entire explain
+Branch: main
+Checkpoints: 0
+
+No checkpoints found on this branch.
+Checkpoints will appear here after you save changes during a Claude session.
 ```
 
-で当時のAIとの対話を丸ごと読み返せます。
+**チェックポイントがゼロ。何も記録されていませんでした。**
+
+原因を調査すると:
+
+- Gitフック（4つ）は正しく設置されている
+- 孤立ブランチ `entire/checkpoints/v1` も作成済み
+- しかし、ブランチの中身は「Initialize metadata branch」の初期化コミット1件のみで**空**
+- どのコミットにも `Entire-Checkpoint` トレーラーが付いていない
+
+つまり、**Entireは「箱」だけ設置された状態で、中身は空**だったのです。
+
+### 解決策：`auto-commit` 戦略に切り替える
+
+デフォルトの `manual-commit` 戦略では、Entireがアクティブなセッションを認識できず、コミットとAIセッションの紐付けが行われていませんでした。以下のコマンドで `auto-commit` に切り替えます:
+
+```bash
+$ entire enable --strategy auto-commit --force
+Agent: Claude Code (use --agent to change)
+
+Info: Project settings exist. Saving to settings.local.json instead.
+  Use --project to update the project settings file.
+✓ Hooks installed
+✓ Project configured (.entire/settings.local.json)
+
+Ready.
+```
+
+切り替え後、`entire status --detailed` を実行すると:
+
+```
+Enabled (auto-commit)
+
+Project, enabled (manual-commit)
+Local, enabled (auto-commit)
+
+Active Sessions:
+  (unknown)
+    [Claude Code] e04f455   started just now
+      "aki@AICUJ-A3186 DHGSVR % entire enable --strategy auto-co..."
+```
+
+**セッションが検知されました！** 設定の構造は二重になっています:
+
+| ファイル | strategy | 役割 |
+|---------|----------|------|
+| `settings.json` | `manual-commit` | プロジェクト設定（Git共有・チーム全体） |
+| `settings.local.json` | `auto-commit` | ローカル設定（`.gitignore`対象・個人用） |
+
+Local設定がProject設定を上書きするため、`auto-commit` が有効になります。これで次回のコミットから `Entire-Checkpoint` トレーラーが付与され、`entire explain` でAIとの対話履歴を辿れるようになるはずです。
+
+### 教訓
+
+- `entire enable` だけでは不十分な場合がある
+- Claude Codeとの連携には **`--strategy auto-commit`** が必要
+- `--force` で既存フックを再設定し、`settings.local.json` にローカル設定として保存される
+- `entire status --detailed` でセッション検知状態を確認できる
 
 ## まとめ：コマンド早見表
 
