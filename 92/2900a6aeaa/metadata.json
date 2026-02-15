@@ -1,0 +1,26 @@
+{
+  "cli_version": "0.4.4",
+  "checkpoint_id": "922900a6aeaa",
+  "strategy": "auto-commit",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "DHGSVR25/blog-how-to-use-entire.md"
+  ],
+  "sessions": [
+    {
+      "metadata": "/92/2900a6aeaa/0/metadata.json",
+      "transcript": "/92/2900a6aeaa/0/full.jsonl",
+      "context": "",
+      "content_hash": "/92/2900a6aeaa/0/content_hash.txt",
+      "prompt": ""
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 5,
+    "cache_creation_tokens": 12665,
+    "cache_read_tokens": 131447,
+    "output_tokens": 27,
+    "api_call_count": 3
+  }
+}
