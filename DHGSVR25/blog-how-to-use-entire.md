@@ -392,6 +392,74 @@ Local設定がProject設定を上書きするため、`auto-commit` が有効に
 - `--force` で既存フックを再設定し、`settings.local.json` にローカル設定として保存される
 - `entire status --detailed` でセッション検知状態を確認できる
 
+### 実証：auto-commitに切り替えたら本当に記録された
+
+`auto-commit` に切り替えた直後、ブログ記事の編集作業を行い `git push` しました。すると:
+
+```
+[entire] Pushing session logs to origin...
+```
+
+このメッセージが出るようになりました。`entire explain` で確認すると:
+
+```bash
+$ entire explain
+Branch: main
+Checkpoints: 1
+
+[922900a6aeaa] "以下を書き換えていって\n実践シナリオ：DH..."
+  02-16 01:49 (b04925e) 以下を書き換えていって
+```
+
+**チェックポイントが1件記録されています。** さらに詳細を見ると:
+
+```bash
+$ entire explain --checkpoint 922900a6aeaa
+Checkpoint: 922900a6aeaa
+Session: e04f4553-7ae8-474f-9cdd-4c45431c0437
+Created: 2026-02-15 16:49:56
+Author: Akihiko SHIRAI, Ph.D <shirai@mail.com>
+Tokens: 144144
+
+Commits: (1)
+  b04925e 2026-02-16 以下を書き換えていって
+
+Intent: 以下を書き換えていって 実践シナリオ：DHGSVRでの開発フ...
+Outcome: (not generated)
+
+Files: (1)
+  - DHGSVR25/blog-how-to-use-entire.md
+
+Transcript (checkpoint scope):
+[User] 以下を書き換えていって
+実践シナリオ：DHGSVRでの開発フロー
+...（中略）...
+
+[Assistant]
+
+[Tool] Read: /Users/aki/git.local/DHGSVR/DHGSVR25/blog-how-to-use-entire.md
+
+[Tool] Edit: /Users/aki/git.local/DHGSVR/DHGSVR25/blog-how-to-use-entire.md
+
+[Assistant] 書き換えました。主な変更点：
+- 架空のチェックポイント例（セッションID、トークン数など）を**削除**
+- 代わりに**実際に起きた「チェックポイントがゼロだった」体験**を記述
+...
+```
+
+#### ここから読み取れること
+
+| 項目 | 記録された値 | 意味 |
+|------|-------------|------|
+| **Tokens** | 144,144 | このClaude Codeセッション全体の累積トークン数 |
+| **Transcript** | User → Tool → Assistant | ユーザーの指示、ツール呼び出し（Read, Edit）、AIの応答まで完全記録 |
+| **Intent** | ユーザーのプロンプト原文 | 「なぜこの変更をしたか」が自動的に保存される |
+| **Files** | 変更ファイル一覧 | どのファイルが影響を受けたか |
+
+注目すべきは、**ユーザーのプロンプト原文がそのまま保存されている**点です。これは先述の「リスク：機密情報のうっかり永続化」がまさに現実のものであることを示しています。AIに渡したプロンプトの中にAPIキーや社内URLが含まれていれば、それもそのままチェックポイントに刻まれます。
+
+もう一つ重要なのは、**`[Tool] Read:` や `[Tool] Edit:` といったツール呼び出しまで記録されている**こと。つまりEntireは「人間がAIに何を頼んだか」だけでなく、「AIが具体的にどんな操作を行ったか」まで追跡しています。これはコードレビューの文脈では強力ですが、監視の文脈では要注意です。
+
 ## まとめ：コマンド早見表
 
 | コマンド | 一言で | 破壊的？ |
